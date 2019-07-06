@@ -6,7 +6,7 @@
 *.iml
 
 # OS-specific files
-.DS_Store
+.DS_Storess
 .DS_Store?
 ._*
 .Spotlight-V100
