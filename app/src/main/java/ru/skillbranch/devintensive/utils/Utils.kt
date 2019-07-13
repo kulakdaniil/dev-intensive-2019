@@ -1,12 +1,14 @@
 package ru.skillbranch.devintensive.utils
 
 object Utils {
-    fun parseFullName(fullName:String?) : Pair<String?, String?> {
+    fun parseFullName(fullName: String?) : Pair<String?, String?> {
         val parts : List<String>? = fullName?.split(" ")
-        val firstName = parts?.getOrNull(0)
-        val lastName = parts?.getOrNull(1)
+        var firstName = parts?.getOrNull(0)
+        var lastName = parts?.getOrNull(1)
 //        return Pair(firstName, lastName)
         // Короткая инфиксная запись
+        if (firstName != null && firstName.isEmpty()) firstName = null
+        if (lastName != null && lastName.isEmpty()) lastName = null
         return firstName to lastName
     }
 
