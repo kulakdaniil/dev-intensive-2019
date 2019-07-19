@@ -14,8 +14,6 @@ package ru.skillbranch.devintensive.models
  */
 class Bender(var status:Status = Status.NORMAL, var question: Question = Question.NAME) {
 
-    private var step: Int = 0
-
     fun askQuestion(): String = when(question) {
         Question.NAME -> Question.NAME.question
         Question.PROFESSION -> Question.PROFESSION.question
@@ -28,17 +26,14 @@ class Bender(var status:Status = Status.NORMAL, var question: Question = Questio
     fun listenAnswer(answer: String) : Pair<String, Triple<Int, Int, Int>> {
         return when {
             question.answers.contains(answer) -> {
-                step = 0
                 question = question.nextQuestion()
                 "Отлично - ты справился\n${question.question}" to status.color
             }
-            step < 3 -> {
-                step++
+            status != Status.CRITICAL -> {
                 status = status.nextStatus()
                 "Это неправильный ответ\n${question.question}" to status.color
             }
             else -> {
-                step = 0
                 status = Status.NORMAL
                 question = Question.NAME
                 "Это неправильный ответ. Давай все по новой\n${question.question}" to status.color
