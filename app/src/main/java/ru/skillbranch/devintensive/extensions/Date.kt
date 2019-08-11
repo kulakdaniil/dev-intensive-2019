@@ -2,11 +2,18 @@ package ru.skillbranch.devintensive.extensions
 
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 const val SECOND = 1000L
 const val MINUTE = 60 * SECOND
 const val HOUR = 60 * MINUTE
 const val DAY = 24 * HOUR
+
+private val UNITS_MAP = mapOf(
+    MINUTE to Triple("минуту", "минуты", "минут"),
+    HOUR to Triple("час", "часа", "часов"),
+    DAY to Triple("день", "дня", "дней")
+)
 
 // extension function
 // я так понимаю, мы переопределили ф-ию format для всех объектов Date
@@ -39,8 +46,58 @@ fun Date.humanizeDiff(date: Date = Date()): String {
     // Последний раз был четыре дня назад - пример
     // Последний раз был более года назад - пример
     // Не забываем про склонение числительных!!! 4 дня - 7 дней
-    TODO("not implemented")
+    /*
+        Реализуй extension Date.humanizeDiff(date) (значение по умолчанию текущий момент времени)
+        для форматирования вывода разницы между датами в человекообразном формате, с учетом склонения
+        числительных. Временные интервалы преобразований к человекообразному формату доступны в ресурсах
+        к заданию
+        Пример:
+        Date().add(-2, TimeUnits.HOUR).humanizeDiff() //2 часа назад
+        Date().add(-5, TimeUnits.DAY).humanizeDiff() //5 дней назад
+        Date().add(2, TimeUnits.MINUTE).humanizeDiff() //через 2 минуты
+        Date().add(7, TimeUnits.DAY).humanizeDiff() //через 7 дней
+        Date().add(-400, TimeUnits.DAY).humanizeDiff() //более года назад
+        Date().add(400, TimeUnits.DAY).humanizeDiff() //более чем через год
+    */
+    val future = this.time - date.time > 0
+    val diffSec = with (abs(this.time - date.time) / 1000) { if (future) this + 1 else this}
+
+    /*
+        0с - 1с "только что"
+        1с - 45с "несколько секунд назад"
+        45с - 75с "минуту назад"
+        75с - 45мин "N минут назад"
+        45мин - 75мин "час назад"
+        75мин - 22ч "N часов назад"
+        22ч - 26ч "день назад"
+        26ч - 360д "N дней назад"
+        >360д "более года назад"
+     */
+
+    var result = when(diffSec) {
+        in 0..1 -> "только что"
+        in 1..45 -> "${if (future) "через " else "" }несколько секунд${if (!future) " назад" else "" }"
+        in 45..75 -> getPastOrFuturePhrase(future, MINUTE)
+        in 75..45 * 60 -> getPastOrFuturePhrase(future, MINUTE, diffSec / 60)
+        in 60 * 45..60 * 75 -> getPastOrFuturePhrase(future, HOUR)
+        in 60 * 75..60 * 60 * 22 -> getPastOrFuturePhrase(future, HOUR, diffSec / (60 * 60))
+        in 60 * 60 * 22..60 * 60 * 26 -> getPastOrFuturePhrase(future, DAY)
+        in 60 * 60 * 26..60 * 60 * 24 * 360 -> getPastOrFuturePhrase(future, DAY, diffSec / (60 * 60 * 24))
+        else -> if (future) "более чем через год" else "более года назад"
+    }
+
+    return result
 }
+
+    private fun getTimeUnit(count: Long, type: Long) = when(count) {
+        1L -> UNITS_MAP[type]?.first
+        2L, 3L, 4L -> UNITS_MAP[type]?.second
+        else -> UNITS_MAP[type]?.third
+    }
+
+    private fun getPastOrFuturePhrase(future: Boolean, type: Long, count: Long = 1L): String =
+        "${if (future) "через " else "" }${if (count > 1L) "$count " else "" }" +
+                "${getTimeUnit(count, type)}${if (!future) " назад" else "" }"
 
 enum class TimeUnits {
     SECOND,
