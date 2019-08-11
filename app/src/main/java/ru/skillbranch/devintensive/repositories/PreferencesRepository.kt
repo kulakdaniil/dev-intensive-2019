@@ -31,7 +31,7 @@ object PreferencesRepository {
     fun getAppTheme(): Int = prefs.getInt(APP_THEME, AppCompatDelegate.MODE_NIGHT_NO)
 
     fun getProfile(): Profile = Profile(
-        prefs.getString(REPOSITORY, "")!!,
+        prefs.getString(FIRST_NAME, "")!!,
         prefs.getString(LAST_NAME, "")!!,
         prefs.getString(ABOUT, "")!!,
         prefs.getString(REPOSITORY, "")!!,
@@ -41,13 +41,14 @@ object PreferencesRepository {
 
     fun saveProfile(profile: Profile) {
         with(profile) {
-            putValue(FIRST_NAME to firstName)
-            putValue(LAST_NAME to lastName)
-            putValue(ABOUT to about)
-            putValue(REPOSITORY to
-                    if (Patterns.WEB_URL.matcher(repository).find() || repository.isEmpty()) repository else "")
-            putValue(RATING to rating)
-            putValue(RESPECT to respect)
+//            if (Patterns.WEB_URL.matcher(repository).find() || repository.isEmpty()) {
+                putValue(FIRST_NAME to firstName)
+                putValue(LAST_NAME to lastName)
+                putValue(ABOUT to about)
+                putValue(REPOSITORY to repository)
+                putValue(RATING to rating)
+                putValue(RESPECT to respect)
+//            }
         }
     }
 
