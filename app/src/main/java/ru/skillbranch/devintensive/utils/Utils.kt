@@ -17,7 +17,19 @@ object Utils {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun toInitials(firstName: String?, lastName: String?): String? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun toInitials(firstName: String?, lastName: String?): String? =
+        with(checkNames(firstName) to checkNames(lastName)) {
+            when {
+                first == null && second == null -> null
+                first != null && second == null -> first
+                first == null && second != null -> second
+                else -> "$first$second"
+            }
+        }
+
+
+    private fun checkNames(name: String?): String? = when (name) {
+        "", " ", null -> null
+        else -> name[0].toString().toUpperCase()
     }
 }
