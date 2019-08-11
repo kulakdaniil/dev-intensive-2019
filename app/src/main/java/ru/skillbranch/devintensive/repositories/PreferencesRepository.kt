@@ -2,6 +2,7 @@ package ru.skillbranch.devintensive.repositories
 
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import android.util.Patterns
 import androidx.appcompat.app.AppCompatDelegate
 import ru.skillbranch.devintensive.App
 import ru.skillbranch.devintensive.models.Profile
@@ -43,7 +44,8 @@ object PreferencesRepository {
             putValue(FIRST_NAME to firstName)
             putValue(LAST_NAME to lastName)
             putValue(ABOUT to about)
-            putValue(REPOSITORY to repository)
+            putValue(REPOSITORY to
+                    if (Patterns.WEB_URL.matcher(repository).find() || repository.isEmpty()) repository else "")
             putValue(RATING to rating)
             putValue(RESPECT to respect)
         }
