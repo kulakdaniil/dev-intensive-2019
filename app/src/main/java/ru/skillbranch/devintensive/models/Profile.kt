@@ -1,5 +1,7 @@
 package ru.skillbranch.devintensive.models
 
+import ru.skillbranch.devintensive.utils.Utils
+
 data class Profile(
     val firstName: String,
     val lastName: String,
@@ -11,7 +13,7 @@ data class Profile(
 
     //2.02.17
 
-    val nickName: String = "John Doe" //TODO implement me
+    var nickName: String = Utils.transliteration("$firstName $lastName", "_")
     val rank: String = "Junior Android Developer"
 
     fun toMap(): Map<String, Any> = mapOf(
