@@ -10,6 +10,7 @@ const val HOUR = 60 * MINUTE
 const val DAY = 24 * HOUR
 
 private val UNITS_MAP = mapOf(
+    SECOND to Triple("секунду", "секунды", "секунд"),
     MINUTE to Triple("минуту", "минуты", "минут"),
     HOUR to Triple("час", "часа", "часов"),
     DAY to Triple("день", "дня", "дней")
@@ -89,19 +90,26 @@ fun Date.humanizeDiff(date: Date = Date()): String {
     return result
 }
 
-    private fun getTimeUnit(count: Long, type: Long) = when(count) {
+private fun getTimeUnit(count: Long, type: Long): String? {
+    var newCount = count
+    if (newCount > 100) newCount %= 100
+    if (newCount > 20) newCount %= 10
+    return when (newCount) {
         1L -> UNITS_MAP[type]?.first
         2L, 3L, 4L -> UNITS_MAP[type]?.second
         else -> UNITS_MAP[type]?.third
     }
+}
 
-    private fun getPastOrFuturePhrase(future: Boolean, type: Long, count: Long = 1L): String =
-        "${if (future) "через " else "" }${if (count > 1L) "$count " else "" }" +
-                "${getTimeUnit(count, type)}${if (!future) " назад" else "" }"
+private fun getPastOrFuturePhrase(future: Boolean, type: Long, count: Long = 1L): String =
+    "${if (future) "через " else "" }${if (count > 1L) "$count " else "" }" +
+            "${getTimeUnit(count, type)}${if (!future) " назад" else "" }"
 
-enum class TimeUnits {
-    SECOND,
-    MINUTE,
-    HOUR,
-    DAY
+enum class TimeUnits(private val type: Long) {
+    SECOND(ru.skillbranch.devintensive.extensions.SECOND),
+    MINUTE(ru.skillbranch.devintensive.extensions.MINUTE),
+    HOUR(ru.skillbranch.devintensive.extensions.HOUR),
+    DAY(ru.skillbranch.devintensive.extensions.DAY);
+
+    fun plural(value: Int): String = "$value ${getTimeUnit(value.toLong(), this.type)}"
 }
