@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_chat_single.*
@@ -14,7 +15,7 @@ import ru.skillbranch.devintensive.extensions.LOG_TAG
 import ru.skillbranch.devintensive.models.data.ChatItem
 import ru.skillbranch.devintensive.ui.custom.AvatarImageView
 
-class ChatAdapter : RecyclerView.Adapter<ChatAdapter.SingleViewHolder>() {
+class ChatAdapter(val listener: (ChatItem) -> Unit) : RecyclerView.Adapter<ChatAdapter.SingleViewHolder>() {
 
     var items: List<ChatItem> = listOf()
 
@@ -30,12 +31,30 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.SingleViewHolder>() {
 
     override fun onBindViewHolder(holder: SingleViewHolder, position: Int) {
         Log.d(LOG_TAG, "onBindViewHolder $position")
-        holder.bind(items[position])
+        holder.bind(items[position], listener)
     }
 
     fun updateData(data: List<ChatItem>) {
+
+        Log.d(LOG_TAG, "update data adapter - new data ${data.size} hash: ${data.hashCode()}" +
+                "old data ${items.size} hash: ${items.hashCode()}")
+
+        val diffCalback = object: DiffUtil.Callback() {
+            override fun areItemsTheSame(oldPos: Int, newPos: Int): Boolean =
+                items[oldPos].id == data[newPos].id
+
+            override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean =
+                // Для сверки контента, т.к. используем data-классы можем сравнить только хэш-коды
+                items[oldPos].hashCode() == data[newPos].hashCode()
+
+            override fun getOldListSize(): Int = items.size
+
+            override fun getNewListSize(): Int = data.size
+        }
+
+        val diffResult = DiffUtil.calculateDiff(diffCalback)
         items = data
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     inner class SingleViewHolder(convertView: View) : RecyclerView.ViewHolder(convertView), LayoutContainer {
@@ -46,7 +65,7 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.SingleViewHolder>() {
         /*val iv_avatar = convertView.findViewById<AvatarImageView>(R.id.iv_avatar_single)
         val tv_title = convertView.findViewById<TextView>(R.id.tv_title_single)*/
 
-        fun bind(item: ChatItem) {
+        fun bind(item: ChatItem, listener: (ChatItem) -> Unit) {
             // Когда обращаемся через itemView без реализации LayoutContainer - containerView
             // - убиваем наглухо всю производительность
             /*iv_avatar.setInitials(item.initials)
@@ -73,7 +92,10 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.SingleViewHolder>() {
 
             tv_title_single.text = item.title
             tv_message_single.text = item.shortDescription
-
+            itemView.setOnClickListener{
+                // invoke - вызвать лямбду
+                listener.invoke(item)
+            }
         }
     }
 

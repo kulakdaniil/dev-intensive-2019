@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.ui.adapters.ChatAdapter
@@ -29,11 +31,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() {
 
-        chatAdapter = ChatAdapter()
+        chatAdapter = ChatAdapter {
+            Snackbar.make(rv_chat_list, "Click on ${it.title}", Snackbar.LENGTH_LONG).show()
+        }
+        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
 
         with(rv_chat_list) {
             adapter = chatAdapter
             layoutManager = LinearLayoutManager(this@MainActivity)
+            addItemDecoration(divider)
+        }
+
+        fab.setOnClickListener{
+            viewModel.addItems()
         }
     }
 
