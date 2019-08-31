@@ -1,5 +1,6 @@
 package ru.skillbranch.devintensive.extensions
 
+import org.intellij.lang.annotations.Language
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
@@ -23,6 +24,19 @@ private val UNITS_MAP = mapOf(
 fun Date.format(pattern:String="HH:mm:ss dd.MM.yy"):String {
     val dateFormat = SimpleDateFormat(pattern, Locale("ru"))
     return dateFormat.format(this)
+}
+
+fun Date.shortFormat(): String? {
+    // сегодня - час:минута, иначе - день, месяц, год
+    val pattern = if (this.isSameDay(Date())) "HH:mm" else "dd.MM.yy"
+    val dateFormat = SimpleDateFormat(pattern, Locale("ru"))
+    return dateFormat.format(this)
+}
+
+fun Date.isSameDay(date: Date): Boolean {
+    val day1 = this.time / DAY
+    val day2 = date.time / DAY
+    return day1 == day2
 }
 
 // Добавляем к объекту Data определенный временной сдвиг, который будет задаваться задаваемымми нами величинами

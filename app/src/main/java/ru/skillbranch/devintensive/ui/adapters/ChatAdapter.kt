@@ -33,6 +33,11 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.SingleViewHolder>() {
         holder.bind(items[position])
     }
 
+    fun updateData(data: List<ChatItem>) {
+        items = data
+        notifyDataSetChanged()
+    }
+
     inner class SingleViewHolder(convertView: View) : RecyclerView.ViewHolder(convertView), LayoutContainer {
         // нет переменной containerView - переопределяем геттер
         override val containerView: View?
@@ -47,9 +52,28 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.SingleViewHolder>() {
             /*iv_avatar.setInitials(item.initials)
             tv_title.text = item.shortDescription*/
 
-            // а здесь нужно включать experimental в build.gradle app
-            iv_avatar_single.setInitials(item.initials)
-            tv_title_single.text = item.shortDescription
+            if (item.avatar == null) {
+                // а здесь нужно включать experimental в build.gradle app
+                iv_avatar_single.setInitials(item.initials)
+            } else {
+                // TODO: set drawable
+            }
+
+            sv_indicator.visibility = if (item.isOnline) View.VISIBLE else View.GONE
+
+            with(tv_date_single) {
+                visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
+                text = item.lastMessageDate
+            }
+
+            with(tv_counter_single) {
+                visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
+                text = item.messageCount.toString()
+            }
+
+            tv_title_single.text = item.title
+            tv_message_single.text = item.shortDescription
+
         }
     }
 
