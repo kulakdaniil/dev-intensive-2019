@@ -3,7 +3,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_size"
         xmlns:tools="http://schemas.android.com/tools"
-        android:padding="@dimen/spacing_normal_16">
+        android:padding="@dimen/spacing_normal_16"
+        android:background="@android:color/white">
+
+
     <ru.skillbranch.devintensive.ui.custom.AvatarImageView
             android:id="@+id/iv_avatar_single"
             android:layout_width="@dimen/avatar_item_size"

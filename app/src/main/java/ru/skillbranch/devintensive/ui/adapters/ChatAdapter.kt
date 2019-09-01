@@ -1,5 +1,6 @@
 package ru.skillbranch.devintensive.ui.adapters
 
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -57,7 +58,8 @@ class ChatAdapter(val listener: (ChatItem) -> Unit) : RecyclerView.Adapter<ChatA
         diffResult.dispatchUpdatesTo(this)
     }
 
-    inner class SingleViewHolder(convertView: View) : RecyclerView.ViewHolder(convertView), LayoutContainer {
+    inner class SingleViewHolder(convertView: View) : RecyclerView.ViewHolder(convertView),
+        LayoutContainer, ItemTouchViewHolder {
         // нет переменной containerView - переопределяем геттер
         override val containerView: View?
             get() = itemView
@@ -96,6 +98,14 @@ class ChatAdapter(val listener: (ChatItem) -> Unit) : RecyclerView.Adapter<ChatA
                 // invoke - вызвать лямбду
                 listener.invoke(item)
             }
+        }
+
+        override fun onItemSelected() {
+            itemView.setBackgroundColor(Color.LTGRAY)
+        }
+
+        override fun onItemCleared() {
+            itemView.setBackgroundColor(Color.WHITE)
         }
     }
 
