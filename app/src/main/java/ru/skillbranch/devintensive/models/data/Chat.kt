@@ -24,10 +24,10 @@ data class Chat (
         return Date()
     }
 
-    private fun lastMessageShort(): String {
+    private fun lastMessageShort(): Pair<String, String> {
         // TODO: implement me
         // показывает краткое содержание последнего сообщения
-        return "Сообщений еще нет"
+        return "Сообщений еще нет" to "@John_Doe"
     }
 
     private fun isSingle(): Boolean = members.size == 1
@@ -40,21 +40,30 @@ data class Chat (
                 user.avatar,
                 Utils.toInitials(user.firstName, user.lastName) ?: "??",
                 "${user.firstName ?: ""} ${user.lastName ?: ""}",
-                lastMessageShort(),
+                lastMessageShort().first,
                 unreadableMessageCount(),
                 lastMessageDate()?.shortFormat(),
                 user.isOnline
             )
         } else {
+            val messageShort = lastMessageShort()
             ChatItem(
                 id,
                 null,
                 "",
                 title,
-                lastMessageShort(),
+                messageShort.first,
                 unreadableMessageCount(),
                 lastMessageDate()?.shortFormat(),
-                false
+                false,
+                ChatType.GROUP,
+                messageShort.second
             )
         }
+}
+
+enum class ChatType {
+    SINGLE,
+    GROUP,
+    ARCHIVE
 }

@@ -8,5 +8,7 @@ data class ChatItem (
     val shortDescription: String?,
     val messageCount: Int = 0,
     val lastMessageDate: String?,
-    val isOnline: Boolean = false
+    val isOnline: Boolean = false,
+    val chatType: ChatType = ChatType.SINGLE,
+    var author: String? = null
 )
