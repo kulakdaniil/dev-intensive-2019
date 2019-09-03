@@ -18,10 +18,18 @@ class GroupViewModel : ViewModel() {
     fun getSelectedData(): LiveData<List<UserItem>> = selectedItems
 
     fun handleSelectedItem(userId: String) {
-
+        userItems.value = userItems.value!!.map{
+            if (it.id == userId) it.copy(isSelected = !it.isSelected)
+            else it
+        }
     }
 
-    private fun loadUsers(): List<UserItem> {
-        TODO("to be")
+    fun handleRemoveChip(userId: String) {
+        userItems.value = userItems.value!!.map{
+            if (it.id == userId) it.copy(isSelected = false)
+            else it
+        }
     }
+
+    private fun loadUsers(): List<UserItem> = GroupRepository.loadUsers().map{ it.toUserItem() }
 }
