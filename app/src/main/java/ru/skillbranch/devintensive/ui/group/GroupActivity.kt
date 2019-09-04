@@ -1,6 +1,9 @@
 package ru.skillbranch.devintensive.ui.group
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -43,6 +46,7 @@ class GroupActivity : androidx.appcompat.app.AppCompatActivity() {
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(GroupViewModel::class.java)
         viewModel.getUsersData().observe(this, Observer { usersAdapter.updateData(it) })
+        viewModel.getSelectedData().observe(this, Observer { updateChips(it) })
     }
 
     private fun addChipToGroup(user: UserItem) {
@@ -52,15 +56,27 @@ class GroupActivity : androidx.appcompat.app.AppCompatActivity() {
             isCloseIconVisible = true
             tag = user.id
             isClickable = true
+            closeIconTint = ColorStateList.valueOf(Color.WHITE)
+            chipBackgroundColor = ColorStateList.valueOf(getColor(R.color.color_primary_light))
+            setTextColor(Color.WHITE)
         }
         chip.setOnCloseIconClickListener { viewModel.handleRemoveChip(it.tag.toString()) }
         chip_group.addView(chip)
     }
 
     private fun updateChips(listUsers: List<UserItem>) {
+
+        chip_group.visibility = if (listUsers.isEmpty()) View.GONE else View.VISIBLE
+
         // превращает коллекцию в мапу, применив к ней какую-то трансформ функцию
         val users = listUsers.associate { user -> user.id to user }
             .toMutableMap()
         val views = chip_group.children.associate { view -> view.tag to view }
+
+        for((k, v) in views) {
+            if (users.containsKey(k)) chip_group.removeView(v)
+            else users.remove(k)
+        }
+        users.forEach{(_, v) -> addChipToGroup(v)}
     }
 }
