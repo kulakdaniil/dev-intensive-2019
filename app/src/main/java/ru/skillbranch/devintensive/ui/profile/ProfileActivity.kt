@@ -38,9 +38,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     // Для api < 28 нет гарантии, что метод будет вызван - см. комментарии в видео : 1:57:45 (третье занятие)
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putBoolean(IS_EDIT_MODE, isEditMode)
+        outState.putBoolean(IS_EDIT_MODE, isEditMode)
     }
 
     private fun initViewModel() {

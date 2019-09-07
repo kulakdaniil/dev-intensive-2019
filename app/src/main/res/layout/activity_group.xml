@@ -49,4 +49,19 @@
             </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/spacing_normal_16"
+            app:srcCompat="@drawable/ic_arrow_forward_black_24dp"
+            android:visibility="invisible"
+            android:scaleX="0"
+            android:scaleY="0"
+            tools:visibility="visible"
+            tools:scaleX="1"
+            tools:scaleY="1"
+            />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
