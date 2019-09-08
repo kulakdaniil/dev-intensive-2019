@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_group.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import ru.skillbranch.devintensive.R
@@ -59,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             addItemDecoration(divider)
         }
 
-        fabM.setOnClickListener{
+        fab.setOnClickListener{
             val intent = Intent(this, GroupActivity::class.java)
             startActivity(intent)
         }

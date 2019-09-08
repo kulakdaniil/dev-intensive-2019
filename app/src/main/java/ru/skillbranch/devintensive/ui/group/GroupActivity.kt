@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.children
@@ -51,8 +52,19 @@ class GroupActivity : androidx.appcompat.app.AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean =
+        if (item?.itemId == android.R.id.home) {
+            finish()
+            overridePendingTransition(R.anim.idle, R.anim.bottom_down)
+            true
+        } else {
+            super.onOptionsItemSelected(item)
+        }
+
+
     private fun initToolbar() {
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun initViews() {
@@ -67,7 +79,7 @@ class GroupActivity : androidx.appcompat.app.AppCompatActivity() {
         fab.setOnClickListener {
             viewModel.handleCreateGroup()
             finish()
-//            overridePendingTransition()
+            overridePendingTransition(R.anim.idle, R.anim.bottom_down)
         }
     }
 
