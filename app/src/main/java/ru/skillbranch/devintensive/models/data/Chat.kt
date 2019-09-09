@@ -1,7 +1,10 @@
 package ru.skillbranch.devintensive.models.data
 
+import org.w3c.dom.Text
 import ru.skillbranch.devintensive.extensions.shortFormat
 import ru.skillbranch.devintensive.models.BaseMessage
+import ru.skillbranch.devintensive.models.ImageMessage
+import ru.skillbranch.devintensive.models.TextMessage
 import ru.skillbranch.devintensive.utils.Utils
 import java.util.*
 
@@ -15,20 +18,21 @@ data class Chat (
 ) {
     fun unreadableMessageCount(): Int {
         // Возвращает кол-во непрочитанных сообщений
-        return 0
+        return messages.filter { !it.isReaded }.size
     }
 
-    private fun lastMessageDate(): Date? {
-        // TODO: implement me
-        // возвращаем последнюю дату сообщений в списке наших messag'ей
-        return Date()
-    }
+    fun lastMessageDate(): Date? =
+        if (messages.size > 0)
+            messages[messages.size - 1].date
+        else null
 
-    private fun lastMessageShort(): Pair<String, String> {
-        // TODO: implement me
-        // показывает краткое содержание последнего сообщения
-        return "Сообщений еще нет" to "@John_Doe"
-    }
+    fun lastMessageShort(): Pair<String?, String?> =
+        when (val message = if (messages.size > 0) messages[messages.size - 1] else null) {
+            is ImageMessage -> "${message.from.firstName} - отправил фото" to message.from.firstName
+            is TextMessage -> message.text to message.from.firstName
+            else -> "" to ""
+        }
+
 
     private fun isSingle(): Boolean = members.size == 1
 
